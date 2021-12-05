@@ -5,7 +5,6 @@ import { encryptPassword } from '../helpers/encryption.js';
 export const registerUser = async (req, res, next) => {
   try {
     const password = await encryptPassword(req.body.password);
-    console.log(password);
     const newUser = new User({ ...req.body, password });
 
     await newUser.save();

@@ -9,7 +9,7 @@ export const getAllCommentsFromPost = async (req, res) => {
   const { id } = req.params;
   const comments = await Comment.find({ post: id }).populate('user', [
     'username',
-    'profilePic',
+    'avatar',
   ]);
   res.json(comments);
 };
@@ -17,8 +17,6 @@ export const getAllCommentsFromPost = async (req, res) => {
 export const createComment = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const post = await Post.findById(id);
-    post.commentsCount += 1;
 
     const { content, repliedTo, level } = req.body;
     const newComment = new Comment({
@@ -28,12 +26,16 @@ export const createComment = async (req, res, next) => {
       repliedTo: repliedTo ? repliedTo : null,
       level,
     });
-
     await newComment.save();
+
+    const post = await Post.findById(id);
+    post.commentsCount += 1;
+    post.comments.push(newComment.id);
     await post.save();
+
     const populatedComment = await newComment.populate('user', [
       'username',
-      'profilePic',
+      'avatar',
     ]);
     res.status(201).send(populatedComment);
   } catch (err) {
@@ -68,6 +70,7 @@ export const deleteComment = async (req, res, next) => {
       { new: true }
     );
     if (!deletedComment) throw new createError.Unauthorized();
+
     req.user.comments.pull(deletedComment.id);
     await User.findByIdAndUpdate(req.user.id, { comments: req.user.comments });
     res.end();

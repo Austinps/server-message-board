@@ -8,7 +8,7 @@ import {
   updateSubreddit,
 } from '../controllers/subreddit.js';
 import { handleUserSubscription } from '../controllers/user.js';
-import verifyUser from '../middleware/verifyUser.js';
+import verifyUser from '../middleware/authentication.js';
 
 const router = Router({ mergeParams: true });
 

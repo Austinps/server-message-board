@@ -6,7 +6,7 @@ import {
   deletePost,
   editPost,
 } from '../controllers/posts.js';
-import verifyUser from '../middleware/verifyUser.js';
+import verifyUser from '../middleware/authentication.js';
 
 const router = Router({ mergeParams: true });
 

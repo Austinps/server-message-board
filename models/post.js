@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { filteredArray } from '../utils/helpers.js';
+import { filteredArray } from '../helpers/helpers.js';
 const { Schema, model } = mongoose;
 
 const postSchema = new Schema(

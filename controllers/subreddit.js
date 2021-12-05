@@ -1,8 +1,8 @@
 import createError from 'http-errors';
+
 import Post from '../models/post.js';
 import Subreddit from '../models/subreddit.js';
-
-import { getRandomColor } from '../utils/helpers.js';
+import { getRandomColor } from '../helpers/helpers.js';
 
 export const getAllSubs = async (req, res, next) => {
   try {
@@ -59,14 +59,15 @@ export const handleSubredditMembers = async (req, res, next) => {
   try {
     const { id } = req.params;
     const subreddit = await Subreddit.findById(id);
-    console.log(req.alreadySubscribed);
-    if (!req.alreadySubscribed) {
+
+    if (!req.isSubscribed) {
       subreddit.members.push(req.user.id);
       subreddit.membersCount += 1;
     } else {
       subreddit.members.pull(req.user.id);
       subreddit.membersCount -= 1;
     }
+
     subreddit.save();
     res.status(200).send(subreddit);
   } catch (err) {

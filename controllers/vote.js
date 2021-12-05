@@ -4,22 +4,21 @@ import User from '../models/user.js';
 
 export const userPostUpVote = async (req, res, next) => {
   try {
-    const { id } = req.params;
     const user = await User.findById(req.user.id);
-    const alreadyUpVoted = user.postsUpVoted.some((item) => item.equals(id));
-    const alreadyDownVoted = user.postsDownVoted.some((item) =>
-      item.equals(id)
-    );
-    if (!alreadyUpVoted && !alreadyDownVoted) {
+    const { id } = req.params;
+
+    const isUpVoted = user.postsUpVoted.some((item) => item.equals(id));
+    const isDownVoted = user.postsDownVoted.some((item) => item.equals(id));
+    if (!isUpVoted && !isDownVoted) {
       user.postsUpVoted.push(id);
-    } else if (!alreadyUpVoted && alreadyDownVoted) {
+    } else if (!isUpVoted && isDownVoted) {
       user.postsDownVoted.pull(id);
       user.postsUpVoted.push(id);
     } else {
       user.postsUpVoted.pull(id);
     }
     await user.save();
-    req.userVotes = { alreadyUpVoted, alreadyDownVoted };
+    req.userVote = { isUpVoted, isDownVoted };
     next();
   } catch (err) {
     next(err);
@@ -28,21 +27,20 @@ export const userPostUpVote = async (req, res, next) => {
 
 export const userPostDownVote = async (req, res, next) => {
   try {
-    const { id } = req.params;
     const user = await User.findById(req.user.id);
-    const alreadyUpVoted = user.postsUpVoted.some((item) => item.equals(id));
-    const alreadyDownVoted = user.postsDownVoted.some((item) =>
-      item.equals(id)
-    );
-    if (!alreadyUpVoted && !alreadyDownVoted) {
+    const { id } = req.params;
+
+    const isUpVoted = user.postsUpVoted.some((item) => item.equals(id));
+    const isDownVoted = user.postsDownVoted.some((item) => item.equals(id));
+    if (!isUpVoted && !isDownVoted) {
       user.postsDownVoted.push(id);
-    } else if (alreadyUpVoted && !alreadyDownVoted) {
+    } else if (isUpVoted && !isDownVoted) {
       user.postsUpVoted.pull(id);
       user.postsDownVoted.push(id);
     } else {
       user.postsDownVoted.pull(id);
     }
-    req.userVotes = { alreadyUpVoted, alreadyDownVoted };
+    req.userVote = { isUpVoted, isDownVoted };
     await user.save();
     next();
   } catch (err) {
@@ -51,13 +49,13 @@ export const userPostDownVote = async (req, res, next) => {
 };
 export const handlePostUpVote = async (req, res, next) => {
   try {
-    const { alreadyUpVoted, alreadyDownVoted } = req.userVotes;
+    const { isUpVoted, isDownVoted } = req.userVote;
     const { id } = req.params;
     const post = await Post.findById(id);
 
-    if (!alreadyUpVoted && !alreadyDownVoted) {
+    if (!isUpVoted && !isDownVoted) {
       post.upVotes += 1;
-    } else if (!alreadyUpVoted && alreadyDownVoted) {
+    } else if (!isUpVoted && isDownVoted) {
       post.downVotes -= 1;
       post.upVotes += 1;
     } else {
@@ -72,13 +70,13 @@ export const handlePostUpVote = async (req, res, next) => {
 
 export const handlePostDownVote = async (req, res, next) => {
   try {
-    const { alreadyUpVoted, alreadyDownVoted } = req.userVotes;
+    const { isUpVoted, isDownVoted } = req.userVote;
     const { id } = req.params;
     const post = await Post.findById(id);
 
-    if (!alreadyUpVoted && !alreadyDownVoted) {
+    if (!isUpVoted && !isDownVoted) {
       post.downVotes += 1;
-    } else if (alreadyUpVoted && !alreadyDownVoted) {
+    } else if (isUpVoted && !isDownVoted) {
       post.downVotes += 1;
       post.upVotes -= 1;
     } else {
@@ -96,19 +94,17 @@ export const userCommentUpVote = async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findById(req.user.id);
-    const alreadyUpVoted = user.commentsUpVoted.some((item) => item.equals(id));
-    const alreadyDownVoted = user.commentsDownVoted.some((item) =>
-      item.equals(id)
-    );
-    if (!alreadyUpVoted && !alreadyDownVoted) {
+    const isUpVoted = user.commentsUpVoted.some((item) => item.equals(id));
+    const isDownVoted = user.commentsDownVoted.some((item) => item.equals(id));
+    if (!isUpVoted && !isDownVoted) {
       user.commentsUpVoted.push(id);
-    } else if (!alreadyUpVoted && alreadyDownVoted) {
+    } else if (!isUpVoted && isDownVoted) {
       user.commentsDownVoted.pull(id);
       user.commentsUpVoted.push(id);
     } else {
       user.commentsUpVoted.pull(id);
     }
-    req.userVotes = { alreadyUpVoted, alreadyDownVoted };
+    req.userVote = { isUpVoted, isDownVoted };
     await user.save();
     next();
   } catch (err) {
@@ -120,20 +116,18 @@ export const userCommentDownVote = async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findById(req.user.id);
-    const alreadyUpVoted = user.commentsUpVoted.some((item) => item.equals(id));
-    const alreadyDownVoted = user.commentsDownVoted.some((item) =>
-      item.equals(id)
-    );
-    if (!alreadyUpVoted && !alreadyDownVoted) {
+    const isUpVoted = user.commentsUpVoted.some((item) => item.equals(id));
+    const isDownVoted = user.commentsDownVoted.some((item) => item.equals(id));
+    if (!isUpVoted && !isDownVoted) {
       user.commentsDownVoted.push(id);
-    } else if (alreadyUpVoted && !alreadyDownVoted) {
+    } else if (isUpVoted && !isDownVoted) {
       user.commentsUpVoted.pull(id);
       user.commentsDownVoted.push(id);
     } else {
       user.commentsDownVoted.pull(id);
     }
 
-    req.userVotes = { alreadyUpVoted, alreadyDownVoted };
+    req.userVote = { isUpVoted, isDownVoted };
     await user.save();
     next();
   } catch (err) {
@@ -143,14 +137,14 @@ export const userCommentDownVote = async (req, res, next) => {
 
 export const handleCommentUpVote = async (req, res, next) => {
   try {
-    const { alreadyUpVoted, alreadyDownVoted } = req.userVotes;
+    const { isUpVoted, isDownVoted } = req.userVote;
     const { id } = req.params;
     const comment = await Comment.findById(id);
     if (!comment) throw new createHttpError.NotFound();
 
-    if (!alreadyUpVoted && !alreadyDownVoted) {
+    if (!isUpVoted && !isDownVoted) {
       comment.upVotes += 1;
-    } else if (!alreadyUpVoted && alreadyDownVoted) {
+    } else if (!isUpVoted && isDownVoted) {
       comment.downVotes -= 1;
       comment.upVotes += 1;
     } else {
@@ -166,14 +160,14 @@ export const handleCommentUpVote = async (req, res, next) => {
 
 export const handleCommentDownVote = async (req, res, next) => {
   try {
-    const { alreadyUpVoted, alreadyDownVoted } = req.userVotes;
+    const { isUpVoted, isDownVoted } = req.userVote;
     const { id } = req.params;
     const comment = await Comment.findById(id);
     if (!comment) throw new createHttpError.NotFound();
 
-    if (!alreadyUpVoted && !alreadyDownVoted) {
+    if (!isUpVoted && !isDownVoted) {
       comment.downVotes += 1;
-    } else if (alreadyUpVoted && !alreadyDownVoted) {
+    } else if (isUpVoted && !isDownVoted) {
       comment.downVotes += 1;
       comment.upVotes -= 1;
     } else {

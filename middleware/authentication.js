@@ -1,6 +1,6 @@
 import createError from 'http-errors';
 
-import User from '../models/User.js';
+import User from '../models/user.js';
 
 const verifyUser = async (req, res, next) => {
   try {
@@ -11,7 +11,6 @@ const verifyUser = async (req, res, next) => {
     if (!verifiedUser) throw new createError.Unauthorized();
 
     req.user = verifiedUser;
-    console.log(req.user.id);
     next();
   } catch (err) {
     next(err);

@@ -3,12 +3,12 @@ import {
   getAllUsers,
   getSingleUser,
   updateSingleUser,
-  getUserSubs,
+  getUserSubscriptions,
   getUserPosts,
   getUserComments,
 } from '../controllers/user.js';
 
-import verifyUser from '../middleware/verifyUser.js';
+import verifyUser from '../middleware/authentication.js';
 
 const router = Router({ mergeParams: true });
 
@@ -16,7 +16,7 @@ router.get('/', getAllUsers);
 
 router.route('/:id').get(getSingleUser).patch(verifyUser, updateSingleUser);
 
-router.get('/:id/subreddits', getUserSubs);
+router.get('/:id/subreddits', getUserSubscriptions);
 router.get('/:id/posts', getUserPosts);
 router.get('/:id/comments', getUserComments);
 

@@ -9,9 +9,9 @@ import {
   handleCommentDownVote,
   handlePostUpVote,
   handlePostDownVote,
-} from '../controllers/votes.js';
+} from '../controllers/vote.js';
 
-import verifyUser from '../middleware/verifyUser.js';
+import verifyUser from '../middleware/authentication.js';
 
 const router = Router({ mergeParams: true });
 
@@ -29,7 +29,7 @@ router.patch(
   userCommentUpVote,
   handleCommentUpVote
 );
-router.put(
+router.patch(
   '/comment/:id/down',
   verifyUser,
   userCommentDownVote,

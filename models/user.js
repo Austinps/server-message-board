@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 import createError from 'http-errors';
 
-import { encryptPassword, comparePassword } from '../helpers/encryption.js';
+import { comparePassword } from '../helpers/encryption.js';
 import { signJWT, verifyJWT } from '../helpers/authentication.js';
 
 const userSchema = new Schema(
@@ -23,7 +23,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    profilePic: {
+    avatar: {
       type: String,
       default: 'https://www.w3schools.com/howto/img_avatar.png',
     },
@@ -81,10 +81,6 @@ const userSchema = new Schema(
   }
 );
 
-// userSchema.virtual('prefixedName').get(function () {
-//   return `u/${this.username}`;
-// });
-
 userSchema.set('toObject', { virtuals: true });
 userSchema.set('toJSON', {
   virtuals: true,
@@ -115,7 +111,6 @@ userSchema.static('verifyToken', async function (token) {
   try {
     const decodedToken = await verifyJWT(token, process.env.JWT_SECRET);
     const user = await this.findById(decodedToken.id);
-    //console.log(user);
     return user;
   } catch (err) {
     throw new createError.Unauthorized();

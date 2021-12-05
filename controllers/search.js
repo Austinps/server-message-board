@@ -1,13 +1,25 @@
-import Subreddit from '../models/subreddit.js';
-import Post from '../models/post.js';
-import Comment from '../models/comment.js';
+import {
+  searchSubredditsHelper,
+  searchPostsHelper,
+  searchCommentsHelper,
+} from '../helpers/search.js';
+
+export const searchAll = async (req, res, next) => {
+  try {
+    const searchTerm = req.query.search;
+    const subreddits = await searchSubredditsHelper(searchTerm);
+    const posts = await searchPostsHelper(searchTerm);
+    const comments = await searchCommentsHelper(searchTerm);
+    res.json({ subreddits, posts, comments });
+  } catch (err) {
+    next(err);
+  }
+};
 
 export const searchSubreddits = async (req, res, next) => {
   try {
     const searchTerm = req.query.search;
-    const subreddits = await Subreddit.find({
-      name: { $regex: searchTerm, $options: 'i' },
-    }).select(['communityIcon', 'name', 'membersCount', 'description']);
+    const subreddits = await searchSubredditsHelper(searchTerm);
     res.json(subreddits);
   } catch (err) {
     next(err);
@@ -17,11 +29,7 @@ export const searchSubreddits = async (req, res, next) => {
 export const searchPosts = async (req, res, next) => {
   try {
     const searchTerm = req.query.search;
-    const posts = await Post.find({
-      title: { $regex: searchTerm, $options: 'i' },
-    })
-      .populate('user', ['username'])
-      .populate('subreddit', ['name', 'communityIcon']);
+    const posts = await searchPostsHelper(searchTerm);
     res.json(posts);
   } catch (err) {
     next(err);
@@ -31,35 +39,8 @@ export const searchPosts = async (req, res, next) => {
 export const searchComments = async (req, res, next) => {
   try {
     const searchTerm = req.query.search;
-    const comments = await Comment.find({
-      content: { $regex: searchTerm, $options: 'i' },
-    })
-      .populate('post', ['title'])
-      .populate('user', ['username']);
+    const comments = await searchCommentsHelper(searchTerm);
     res.json(comments);
-  } catch (err) {
-    next(err);
-  }
-};
-
-export const searchAll = async (req, res, next) => {
-  try {
-    const searchTerm = req.query.search;
-    const subreddits = await Subreddit.find({
-      name: { $regex: searchTerm, $options: 'i' },
-    }).select(['communityIcon', 'name', 'membersCount', 'description']);
-    const posts = await Post.find({
-      title: { $regex: searchTerm, $options: 'i' },
-    })
-      .populate('user', ['username'])
-      .populate('subreddit', ['name', 'communityIcon']);
-    const comments = await Comment.find({
-      content: { $regex: searchTerm, $options: 'i' },
-    })
-      .populate('post', ['title'])
-      .populate('user', ['username'])
-      .populate('subreddit', ['name', 'communityIcon']);
-    res.json({ subreddits, posts, comments });
   } catch (err) {
     next(err);
   }

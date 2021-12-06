@@ -4,7 +4,7 @@ import { getRandomColor } from '../helpers/helpers.js';
 
 export const getAllSubs = async (req, res, next) => {
   try {
-    const subreddits = await Subreddit.find(req.query);
+    const subreddits = await Subreddit.find(req.query).lean();
     res.status(200).send(subreddits);
   } catch (err) {
     next(err);
@@ -14,7 +14,7 @@ export const getAllSubs = async (req, res, next) => {
 export const getSingleSubreddit = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const subreddit = await Subreddit.findById(id);
+    const subreddit = await Subreddit.findById(id).lean();
     if (!subreddit) throw new createError.NotFound();
     res.status(200).send(subreddit);
   } catch (err) {

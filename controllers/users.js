@@ -4,7 +4,7 @@ import { handleUserVotes } from '../helpers/voting.js';
 
 export const getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.find(req.query);
+    const users = await User.find(req.query).lean();
     res.status(200).send(users);
   } catch (err) {
     next(err);
@@ -14,7 +14,7 @@ export const getAllUsers = async (req, res, next) => {
 export const getSingleUser = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const user = await User.findById(id);
+    const user = await User.findById(id).lean();
     if (!user) new createError.NotFound();
     res.status(200).send(user);
   } catch (err) {
@@ -68,7 +68,8 @@ export const getUserSubscriptions = async (req, res, next) => {
         'membersCount',
         'coverColor',
         'description',
-      ]);
+      ])
+      .lean();
     if (!user) throw new createError.NotFound();
 
     const { subscriptions, moderating } = user;

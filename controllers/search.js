@@ -5,7 +5,9 @@ import Comment from '../models/comment.js';
 const searchSubredditsHelper = (searchTerm) => {
   return Subreddit.find({
     name: { $regex: searchTerm, $options: 'i' },
-  }).select(['communityIcon', 'name', 'membersCount', 'description']);
+  })
+    .select(['communityIcon', 'name', 'membersCount', 'description'])
+    .lean();
 };
 
 const searchPostsHelper = (searchTerm) => {
@@ -13,7 +15,8 @@ const searchPostsHelper = (searchTerm) => {
     title: { $regex: searchTerm, $options: 'i' },
   })
     .populate('user', ['username'])
-    .populate('subreddit', ['name', 'communityIcon']);
+    .populate('subreddit', ['name', 'communityIcon'])
+    .lean();
 };
 
 const searchCommentsHelper = (searchTerm) => {
@@ -21,7 +24,8 @@ const searchCommentsHelper = (searchTerm) => {
     content: { $regex: searchTerm, $options: 'i' },
   })
     .populate('post', ['title'])
-    .populate('user', ['username']);
+    .populate('user', ['username'])
+    .lean();
 };
 
 // export const sendSearchResults = () => {

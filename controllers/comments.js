@@ -1,20 +1,21 @@
 import createError from 'http-errors';
 import Comment from '../models/Comment.js';
+import { commentSchema } from '../middleware/validator.js';
 import { reverseVotesOnUp, reverseVotesOnDown } from '../helpers/voting.js';
 
 export const getAllCommentsFromPost = async (req, res) => {
   const { id } = req.params;
-  const comments = await Comment.find({ post: id }).populate('author', [
-    'username',
-    'avatar',
-  ]);
+  const comments = await Comment.find({ post: id })
+    .populate('author', ['username', 'avatar'])
+    .lean();
   res.status(200).send(comments);
 };
+
 export const createSingleComment = async (req, res, next) => {
   try {
     const { id } = req.params;
-
-    const { content, repliedTo, level } = req.body;
+    const result = await commentSchema.validateAsync(req.body);
+    const { content, repliedTo, level } = result;
     const newComment = new Comment({
       content,
       post: id,
@@ -67,7 +68,7 @@ export const deleteSingleComment = async (req, res, next) => {
 export const getAllCommentsByUser = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const comments = await Comment.find({ user: id });
+    const comments = await Comment.find({ user: id }).lean();
 
     res.json(comments);
   } catch (err) {

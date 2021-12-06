@@ -4,9 +4,9 @@ import {
   getSingleUser,
   updateSingleUser,
   getUserSubscriptions,
-} from '../controllers/user.js';
-import { getAllPostsByUser } from '../controllers/post.js';
-import { getAllCommentsByUser } from '../controllers/comment.js';
+} from '../controllers/users.js';
+import { getAllPostsByUser } from '../controllers/posts.js';
+import { getAllCommentsByUser } from '../controllers/comments.js';
 
 import verifyUser from '../middleware/authentication.js';
 

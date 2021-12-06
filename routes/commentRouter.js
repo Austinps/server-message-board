@@ -5,9 +5,9 @@ import {
   createSingleComment,
   deleteSingleComment,
   updateSingleComment,
-} from '../controllers/comment.js';
+} from '../controllers/comments.js';
 import verifyUser from '../middleware/authentication.js';
-import { pushCommentIdToPost } from '../controllers/post.js';
+import { pushCommentIdToPost } from '../controllers/posts.js';
 
 const router = Router({ mergeParams: true });
 

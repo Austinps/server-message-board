@@ -4,9 +4,9 @@ import verifyUser from '../middleware/authentication.js';
 import {
   handleUserVoteForPost,
   handleUserVoteForComment,
-} from '../controllers/user.js';
-import { handleVoteForSinglePost } from '../controllers/post.js';
-import { handleVoteForSingleComment } from '../controllers/comment.js';
+} from '../controllers/users.js';
+import { handleVoteForSinglePost } from '../controllers/posts.js';
+import { handleVoteForSingleComment } from '../controllers/comments.js';
 
 const router = Router();
 

@@ -2,15 +2,14 @@ import { Router } from 'express';
 import {
   getAllPosts,
   getSinglePost,
-  createSinglePost,
   deleteSinglePost,
   updateSinglePost,
-} from '../controllers/post.js';
+} from '../controllers/posts.js';
 import verifyUser from '../middleware/authentication.js';
 
 const router = Router();
 
-router.route('/').get(getAllPosts).post(verifyUser, createSinglePost);
+router.get('/', getAllPosts);
 
 //single post
 router

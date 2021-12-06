@@ -1,5 +1,6 @@
 import createError from 'http-errors';
 import Post from '../models/Post.js';
+import { postSchema } from '../middleware/validator.js';
 import { reverseVotesOnUp, reverseVotesOnDown } from '../helpers/voting.js';
 
 export const getAllPosts = async (req, res, next) => {
@@ -7,7 +8,8 @@ export const getAllPosts = async (req, res, next) => {
     const posts = await Post.find({})
       .sort({ createdAt: -1 })
       .populate('author', 'username')
-      .populate('subreddit', ['name', 'communityIcon']);
+      .populate('subreddit', ['name', 'communityIcon'])
+      .lean();
 
     res.json(posts);
   } catch (err) {
@@ -20,7 +22,8 @@ export const getSinglePost = async (req, res, next) => {
     const { id } = req.params;
     const post = await Post.findById(id)
       .populate('author', ['username', 'avatar'])
-      .populate('subreddit', ['name', 'communityIcon']);
+      .populate('subreddit', ['name', 'communityIcon'])
+      .lean();
     if (!post) throw new createError.NotFound();
     res.json(post);
   } catch (err) {
@@ -30,13 +33,13 @@ export const getSinglePost = async (req, res, next) => {
 
 export const createSinglePost = async (req, res, next) => {
   try {
-    const { id } = req.user;
-    const { title, content, subreddit } = req.body;
+    const result = await postSchema.validateAsync(req.body);
+    const { title, content } = result;
     const newPost = new Post({
       title,
       content,
-      subreddit,
-      author: id,
+      subreddit: req.params.id,
+      author: req.user.id,
     });
     await newPost.save();
     const populatedPost = await (
@@ -84,7 +87,8 @@ export const getAllPostsFromSubreddit = async (req, res, next) => {
     const posts = await Post.find({ subreddit: req.params.id })
       .select('-comments')
       .populate('author', 'username')
-      .populate('subreddit', ['name', 'communityIcon']);
+      .populate('subreddit', ['name', 'communityIcon'])
+      .lean();
 
     if (!posts) throw new createError.NotFound();
     res.status(200).send(posts);
@@ -96,7 +100,7 @@ export const getAllPostsFromSubreddit = async (req, res, next) => {
 export const getAllPostsByUser = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const posts = await Post.find({ author: id });
+    const posts = await Post.find({ author: id }).lean();
 
     if (!posts) throw new createError.NotFound();
     res.json(posts);

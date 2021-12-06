@@ -1,8 +1,33 @@
-import {
-  searchSubredditsHelper,
-  searchPostsHelper,
-  searchCommentsHelper,
-} from '../helpers/search.js';
+import Subreddit from '../models/subreddit.js';
+import Post from '../models/post.js';
+import Comment from '../models/comment.js';
+
+const searchSubredditsHelper = (searchTerm) => {
+  return Subreddit.find({
+    name: { $regex: searchTerm, $options: 'i' },
+  }).select(['communityIcon', 'name', 'membersCount', 'description']);
+};
+
+const searchPostsHelper = (searchTerm) => {
+  return Post.find({
+    title: { $regex: searchTerm, $options: 'i' },
+  })
+    .populate('user', ['username'])
+    .populate('subreddit', ['name', 'communityIcon']);
+};
+
+const searchCommentsHelper = (searchTerm) => {
+  return Comment.find({
+    content: { $regex: searchTerm, $options: 'i' },
+  })
+    .populate('post', ['title'])
+    .populate('user', ['username']);
+};
+
+// export const sendSearchResults = () => {
+//   const { results } = req;
+//   res.status(200).send(results);
+// };
 
 export const searchAll = async (req, res, next) => {
   try {
@@ -10,7 +35,7 @@ export const searchAll = async (req, res, next) => {
     const subreddits = await searchSubredditsHelper(searchTerm);
     const posts = await searchPostsHelper(searchTerm);
     const comments = await searchCommentsHelper(searchTerm);
-    res.json({ subreddits, posts, comments });
+    res.status(200).send({ subreddits, posts, comments });
   } catch (err) {
     next(err);
   }

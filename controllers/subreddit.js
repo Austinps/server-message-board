@@ -1,5 +1,4 @@
 import createError from 'http-errors';
-
 import Subreddit from '../models/Subreddit.js';
 import { getRandomColor } from '../helpers/helpers.js';
 

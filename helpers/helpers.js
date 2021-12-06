@@ -1,7 +1,3 @@
-export const filteredArray = (array, itemToRemove) => {
-  return array.filter((item) => item.toString() !== itemToRemove.toString());
-};
-
 export const paginateResults = (pageNumber, limit, results) => {
   return results.slice(pageNumber * limit - limit, pageNumber * limit);
 };

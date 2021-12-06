@@ -1,5 +1,4 @@
 import createError from 'http-errors';
-
 import User from '../models/User.js';
 
 const verifyUser = async (req, res, next) => {

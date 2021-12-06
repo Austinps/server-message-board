@@ -14,8 +14,8 @@ export const handleUserVotes = (id, user, action, type) => {
   const hasDownVoted = user[type].downVoted.some((item) => item.equals(id));
 
   if (action !== 'up' && action !== 'down') throw new createError.BadRequest();
-
   action === 'up' ? user[type].downVoted.pull(id) : user[type].upVoted.pull(id);
+
   if (!hasUpVoted && !hasDownVoted)
     action === 'up'
       ? user[type].upVoted.push(id)

@@ -1,6 +1,6 @@
 import createError from 'http-errors';
-import { handleUserVotes } from '../helpers/voting.js';
 import User from '../models/User.js';
+import { handleUserVotes } from '../helpers/voting.js';
 
 export const getAllUsers = async (req, res, next) => {
   try {

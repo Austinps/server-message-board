@@ -1,6 +1,4 @@
-import mongoose from 'mongoose';
 import createError from 'http-errors';
-
 import Comment from '../models/Comment.js';
 import { reverseVotesOnUp, reverseVotesOnDown } from '../helpers/voting.js';
 
@@ -19,7 +17,7 @@ export const createSingleComment = async (req, res, next) => {
     const { content, repliedTo, level } = req.body;
     const newComment = new Comment({
       content,
-      post: mongoose.Types.ObjectId(id),
+      post: id,
       author: req.user.id,
       repliedTo: repliedTo ? repliedTo : null,
       level,
@@ -99,26 +97,3 @@ export const handleVoteForSingleComment = async (req, res, next) => {
     next(err);
   }
 };
-
-// export const handleVoteForSingleComment = async (req, res, next) => {
-//   try {
-//     const { id } = req.params;
-//     const comment = await Comment.findById(id);
-//     if (!comment) throw new createError.NotFound();
-
-//     const { hasUpVoted, hasDownVoted } = req.userVote;
-//     const { action } = req.body;
-
-//     if (!hasUpVoted && !hasDownVoted)
-//       action === 'up' ? (comment.upVotes += 1) : (comment.downVotes += 1);
-//     if (!hasUpVoted && hasDownVoted)
-//       action === 'up' ? reverseVotesOnUp('comment') : (comment.downVotes -= 1);
-//     if (hasUpVoted && !hasDownVoted)
-//       action === 'up' ? (comment.upVotes -= 1) : reverseVotesOnDown('comment');
-
-//     await comment.save();
-//     res.status(200).send(comment);
-//   } catch (err) {
-//     next(err);
-//   }
-// };

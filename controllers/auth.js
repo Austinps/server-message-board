@@ -1,7 +1,7 @@
 import createError from 'http-errors';
-
 import User from '../models/user.js';
 import { encryptPassword } from '../helpers/encryption.js';
+import { validateEmail } from '../helpers/validators.js';
 
 export const registerUser = async (req, res, next) => {
   try {
@@ -21,8 +21,12 @@ export const registerUser = async (req, res, next) => {
 
 export const loginUser = async (req, res, next) => {
   try {
-    const { username, password } = req.body;
-    const userToLogin = await User.findOne({ username });
+    const { login, password } = req.body;
+    const loginMethod = validateEmail(login)
+      ? { email: login }
+      : { username: login };
+
+    const userToLogin = await User.findOne(loginMethod);
     if (!userToLogin) throw new createError.Unauthorized();
 
     const doPasswordsMatch = await userToLogin.authenticate(password);

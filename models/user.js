@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 import createError from 'http-errors';
-
 import { comparePassword } from '../helpers/encryption.js';
 import { signJWT, verifyJWT } from '../helpers/authentication.js';
 

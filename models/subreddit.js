@@ -17,22 +17,18 @@ const subredditSchema = new Schema(
       type: String,
       default: 'https://i.redd.it/ldmw8e3zadd51.jpg',
     },
-    posts: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Post',
-      },
-    ],
+    // posts: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Post',
+    //   },
+    // ],
     members: [
       {
         type: Schema.Types.ObjectId,
         ref: 'User',
       },
     ],
-    membersCount: {
-      type: Number,
-      default: 1,
-    },
     moderator: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -47,7 +43,6 @@ const subredditSchema = new Schema(
 );
 
 subredditSchema.set('toObject', { virtuals: true });
-
 subredditSchema.set('toJSON', {
   virtuals: true,
   transform: (_, ret) => {
@@ -57,5 +52,10 @@ subredditSchema.set('toJSON', {
   },
 });
 
-const Subreddit = model('Subreddit', subredditSchema);
+subredditSchema.virtual('membersCount').get(function () {
+  return this.members && this.members.length ? this.members.length : 0;
+});
+
+const Subreddit =
+  mongoose.models.Subreddit || model('Subreddit', subredditSchema);
 export default Subreddit;

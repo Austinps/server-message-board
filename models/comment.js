@@ -12,7 +12,7 @@ const commentSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Post',
     },
-    user: {
+    author: {
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
@@ -20,15 +20,15 @@ const commentSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Comment',
     },
+    level: {
+      type: Number,
+      default: 0,
+    },
     upVotes: {
       type: Number,
       default: 0,
     },
     downVotes: {
-      type: Number,
-      default: 0,
-    },
-    level: {
       type: Number,
       default: 0,
     },
@@ -49,6 +49,6 @@ commentSchema.set('toJSON', {
 commentSchema.pre('updateOne', () => {});
 commentSchema.set('toObject', { virtuals: true });
 
-const Comment = model('Comment', commentSchema);
+const Comment = mongoose.models.Comment || model('Comment', commentSchema);
 
 export default Comment;

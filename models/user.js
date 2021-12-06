@@ -10,7 +10,7 @@ const userSchema = new Schema(
     username: {
       type: String,
       required: true,
-      minlength: [7, 'Usernames must have at least 7 characters'],
+      minlength: [5, 'Usernames must have at least 7 characters'],
       unique: true,
     },
     email: {
@@ -39,12 +39,6 @@ const userSchema = new Schema(
         ref: 'Subreddit',
       },
     ],
-    posts: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Post',
-      },
-    ],
     postsUpVoted: [
       {
         type: Schema.Types.ObjectId,
@@ -55,12 +49,6 @@ const userSchema = new Schema(
       {
         type: Schema.Types.ObjectId,
         ref: 'Post',
-      },
-    ],
-    comments: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Comment',
       },
     ],
     commentsUpVoted: [

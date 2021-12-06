@@ -2,11 +2,11 @@ import { Router } from 'express';
 import {
   getAllSubs,
   getSingleSubreddit,
-  getSubredditPosts,
   createSubreddit,
   handleSubredditMembers,
   updateSubreddit,
 } from '../controllers/subreddit.js';
+import { getPostsFromSubreddit } from '../controllers/post.js';
 import { handleUserSubscription } from '../controllers/user.js';
 import verifyUser from '../middleware/authentication.js';
 
@@ -16,7 +16,7 @@ router.route('/').get(getAllSubs).post(verifyUser, createSubreddit);
 
 router.route('/:id').get(getSingleSubreddit).patch(verifyUser, updateSubreddit);
 
-router.get('/:id/posts', getSubredditPosts);
+router.get('/:id/posts', getPostsFromSubreddit);
 router.patch(
   '/:id/subscribe',
   verifyUser,

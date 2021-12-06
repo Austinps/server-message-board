@@ -1,7 +1,6 @@
 import createError from 'http-errors';
 
-import Post from '../models/post.js';
-import Subreddit from '../models/subreddit.js';
+import Subreddit from '../models/Subreddit.js';
 import { getRandomColor } from '../helpers/helpers.js';
 
 export const getAllSubs = async (req, res, next) => {
@@ -41,32 +40,14 @@ export const createSubreddit = async (req, res, next) => {
   }
 };
 
-export const getSubredditPosts = async (req, res, next) => {
-  try {
-    const posts = await Post.find({ subreddit: req.params.id })
-      .select('-comments')
-      .populate('user', 'username')
-      .populate('subreddit', ['name', 'communityIcon']);
-
-    if (!posts) throw new createError.NotFound();
-    res.status(200).send(posts);
-  } catch (err) {
-    next(err);
-  }
-};
-
 export const handleSubredditMembers = async (req, res, next) => {
   try {
     const { id } = req.params;
     const subreddit = await Subreddit.findById(id);
 
-    if (!req.isSubscribed) {
-      subreddit.members.push(req.user.id);
-      subreddit.membersCount += 1;
-    } else {
-      subreddit.members.pull(req.user.id);
-      subreddit.membersCount -= 1;
-    }
+    !req.isSubscribed
+      ? subreddit.members.push(req.user.id)
+      : subreddit.members.pull(req.user.id);
 
     subreddit.save();
     res.status(200).send(subreddit);

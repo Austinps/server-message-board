@@ -1,6 +1,5 @@
 import createError from 'http-errors';
-import User from '../models/user.js';
-import Comment from '../models/comment.js';
+import User from '../models/User.js';
 
 export const getAllUsers = async (req, res, next) => {
   try {
@@ -22,7 +21,7 @@ export const getSingleUser = async (req, res, next) => {
   }
 };
 
-export const updateSingleUser = async (req, res, next) => {
+export const updateUser = async (req, res, next) => {
   try {
     const { id } = req.params;
     const updatedUser = await User.findByIdAndUpdate(id, req.body, {
@@ -81,64 +80,65 @@ export const getUserSubscriptions = async (req, res, next) => {
   }
 };
 
-export const getUserPosts = async (req, res, next) => {
+export const handleUserPostVote = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const user = await User.findById(id)
-      .populate({
-        path: 'posts',
-        populate: {
-          path: 'user',
-          model: 'User',
-          select: 'title',
-        },
-      })
-      .populate({
-        path: 'posts',
-        populate: {
-          path: 'subreddit',
-          model: 'Subreddit',
-          select: 'name communityIcon',
-        },
-      });
+    const user = await User.findById(req.user.id);
+    const isUpVoted = user.postsUpVoted.some((item) => item.equals(id));
+    const isDownVoted = user.postsDownVoted.some((item) => item.equals(id));
+    const { action } = req.body;
 
-    if (!user) throw new createError.NotFound();
-    res.json(user.posts);
+    action === 'up' ? user.postsDownVoted.pull(id) : user.postsUpVoted.pull(id);
+    if (!isUpVoted && !isDownVoted) {
+      action === 'up'
+        ? user.postsUpVoted.push(id)
+        : user.postsDownVoted.push(id);
+    } else if (!isUpVoted && isDownVoted) {
+      action === 'up'
+        ? user.postsUpVoted.push(id)
+        : user.postsDownVoted.pull(id);
+    } else if (isUpVoted && !isDownVoted) {
+      action === 'up'
+        ? user.postsUpVoted.pull(id)
+        : user.postsDownVoted.push(id);
+    }
+
+    req.userVote = { isUpVoted, isDownVoted };
+    await user.save();
+    next();
   } catch (err) {
     next(err);
   }
 };
-
-export const getUserComments = async (req, res, next) => {
+export const handleUserCommentVote = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const comments = await Comment.find({ user: id });
+    const user = await User.findById(req.user.id);
+    const isUpVoted = user.commentsUpVoted.some((item) => item.equals(id));
+    const isDownVoted = user.commentsDownVoted.some((item) => item.equals(id));
+    const { action } = req.body;
 
-    res.json(comments);
+    action === 'up'
+      ? user.commentsDownVoted.pull(id)
+      : user.commentsUpVoted.pull(id);
+    if (!isUpVoted && !isDownVoted) {
+      action === 'up'
+        ? user.commentsUpVoted.push(id)
+        : user.commentsDownVoted.push(id);
+    } else if (!isUpVoted && isDownVoted) {
+      action === 'up'
+        ? user.commentsUpVoted.push(id)
+        : user.commentsDownVoted.pull(id);
+    } else if (isUpVoted && !isDownVoted) {
+      action === 'up'
+        ? user.commentsUpVoted.pull(id)
+        : user.commentsDownVoted.push(id);
+    }
+
+    req.userVote = { isUpVoted, isDownVoted };
+    await user.save();
+    next();
   } catch (err) {
     next(err);
   }
 };
-
-// export const getUserComments = async (req, res, next) => {
-//   try {
-//     const { id } = req.params;
-//     const user = await User.findById(id)
-//       .populate({
-//         path: 'comments',
-//         populate: {
-//           path: 'user',
-//           model: 'User',
-//           select: 'username avatar',
-//         },
-//       })
-//       .populate({
-//         path: 'comments',
-//         populate: { path: 'post', model: 'Post', select: 'title' },
-//       });
-//     if (!user) throw new createError.NotFound();
-//     res.json(user.comments);
-//   } catch (err) {
-//     next(err);
-//   }
-// };

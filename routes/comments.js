@@ -1,20 +1,24 @@
 import { Router } from 'express';
 
 import {
-  getAllCommentsFromPost,
+  getCommentsFromPost,
   createComment,
   deleteComment,
-  editComment,
-} from '../controllers/comments.js';
+  updateComment,
+} from '../controllers/comment.js';
 import verifyUser from '../middleware/authentication.js';
+import { pushCommentToPost } from '../controllers/post.js';
 
 const router = Router({ mergeParams: true });
 
-router.route('/').get(getAllCommentsFromPost).post(verifyUser, createComment);
+router
+  .route('/')
+  .get(getCommentsFromPost)
+  .post(verifyUser, createComment, pushCommentToPost);
 
 router
   .route('/:commentId')
-  .patch(verifyUser, editComment)
+  .patch(verifyUser, updateComment)
   .delete(verifyUser, deleteComment);
 
 export default router;

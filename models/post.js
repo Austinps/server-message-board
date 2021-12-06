@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { filteredArray } from '../helpers/helpers.js';
 const { Schema, model } = mongoose;
 
 const postSchema = new Schema(
@@ -16,7 +15,7 @@ const postSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Subreddit',
     },
-    user: {
+    author: {
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
@@ -34,10 +33,6 @@ const postSchema = new Schema(
         ref: 'Comment',
       },
     ],
-    commentsCount: {
-      type: Number,
-      default: 0,
-    },
   },
   {
     timestamps: true,
@@ -53,5 +48,9 @@ postSchema.set('toJSON', {
   },
 });
 
-const Post = model('Post', postSchema);
+postSchema.virtual('commentsCount').get(function () {
+  return this.comments && this.comments.length ? this.comments.length : 0;
+});
+
+const Post = mongoose.models.Post || model('Post', postSchema);
 export default Post;

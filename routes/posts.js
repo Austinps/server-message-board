@@ -4,8 +4,8 @@ import {
   getSinglePost,
   createPost,
   deletePost,
-  editPost,
-} from '../controllers/posts.js';
+  updatePost,
+} from '../controllers/post.js';
 import verifyUser from '../middleware/authentication.js';
 
 const router = Router({ mergeParams: true });
@@ -16,7 +16,7 @@ router.route('/').get(getAllPosts).post(verifyUser, createPost);
 router
   .route('/:id')
   .get(getSinglePost)
-  .patch(verifyUser, editPost)
+  .patch(verifyUser, updatePost)
   .delete(verifyUser, deletePost);
 
 export default router;

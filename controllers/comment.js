@@ -2,8 +2,9 @@ import mongoose from 'mongoose';
 import createError from 'http-errors';
 
 import Comment from '../models/Comment.js';
+import { reverseVotesOnUp, reverseVotesOnDown } from '../helpers/voting.js';
 
-export const getCommentsFromPost = async (req, res) => {
+export const getAllCommentsFromPost = async (req, res) => {
   const { id } = req.params;
   const comments = await Comment.find({ post: id }).populate('author', [
     'username',
@@ -11,7 +12,7 @@ export const getCommentsFromPost = async (req, res) => {
   ]);
   res.status(200).send(comments);
 };
-export const createComment = async (req, res, next) => {
+export const createSingleComment = async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -32,7 +33,7 @@ export const createComment = async (req, res, next) => {
   }
 };
 
-export const updateComment = async (req, res, next) => {
+export const updateSingleComment = async (req, res, next) => {
   try {
     const { id } = req.params;
     const commentToBeUpdated = await Comment.findOneAndUpdate(
@@ -50,7 +51,7 @@ export const updateComment = async (req, res, next) => {
   }
 };
 
-export const deleteComment = async (req, res, next) => {
+export const deleteSingleComment = async (req, res, next) => {
   try {
     const id = req.params.commentId;
     const commentToBeDeleted = await Comment.findByIdAndUpdate(
@@ -76,66 +77,47 @@ export const getAllCommentsByUser = async (req, res, next) => {
   }
 };
 
-export const handleCommentVoteTotals = async (req, res, next) => {
+export const handleVoteForSingleComment = async (req, res, next) => {
   try {
-    const { isUpVoted, isDownVoted } = req.userVote;
     const { id } = req.params;
     const comment = await Comment.findById(id);
     if (!comment) throw new createError.NotFound();
+
+    const { hasUpVoted, hasDownVoted } = req.userVote;
     const { action } = req.body;
 
-    if (!isUpVoted) {
-      action === 'up'
-        ? (comment.upVotes += 1)
-        : !isDownVoted
-        ? (comment.downVotes += 1)
-        : (comment.downVotes -= 1);
-    } else if (isUpVoted) {
-      action === 'up'
-        ? (comment.upVotes -= 1)
-        : !isDownVoted
-        ? (comment.downVotes += 1)
-        : (comment.downVotes -= 1);
-    }
+    if (!hasUpVoted && !hasDownVoted)
+      action === 'up' ? (comment.upVotes += 1) : (comment.downVotes += 1);
+    if (!hasUpVoted && hasDownVoted)
+      action === 'up' ? reverseVotesOnUp('comment') : (comment.downVotes -= 1);
+    if (hasUpVoted && !hasDownVoted)
+      action === 'up' ? (comment.upVotes -= 1) : reverseVotesOnDown('comment');
 
     await comment.save();
-    res.status(200).json(comment);
+    res.status(200).send(comment);
   } catch (err) {
     next(err);
   }
 };
 
-// export const handleCommentVoteTotals = async (req, res, next) => {
+// export const handleVoteForSingleComment = async (req, res, next) => {
 //   try {
-//     const { isUpVoted, isDownVoted } = req.userVote;
 //     const { id } = req.params;
 //     const comment = await Comment.findById(id);
 //     if (!comment) throw new createError.NotFound();
+
+//     const { hasUpVoted, hasDownVoted } = req.userVote;
 //     const { action } = req.body;
 
-//     if (action === 'up') {
-//       if (!isUpVoted && !isDownVoted) {
-//         comment.upVotes += 1;
-//       } else if (!isUpVoted && isDownVoted) {
-//         comment.downVotes -= 1;
-//         comment.upVotes += 1;
-//       } else {
-//         comment.upVotes -= 1;
-//       }
-//     }
-//     if (action === 'down') {
-//       if (!isUpVoted && !isDownVoted) {
-//         comment.downVotes += 1;
-//       } else if (isUpVoted && !isDownVoted) {
-//         comment.downVotes += 1;
-//         comment.upVotes -= 1;
-//       } else {
-//         comment.downVotes -= 1;
-//       }
-//     }
+//     if (!hasUpVoted && !hasDownVoted)
+//       action === 'up' ? (comment.upVotes += 1) : (comment.downVotes += 1);
+//     if (!hasUpVoted && hasDownVoted)
+//       action === 'up' ? reverseVotesOnUp('comment') : (comment.downVotes -= 1);
+//     if (hasUpVoted && !hasDownVoted)
+//       action === 'up' ? (comment.upVotes -= 1) : reverseVotesOnDown('comment');
 
 //     await comment.save();
-//     res.status(200).json(comment);
+//     res.status(200).send(comment);
 //   } catch (err) {
 //     next(err);
 //   }

@@ -6,7 +6,7 @@ import {
   searchAll,
 } from '../controllers/search.js';
 
-const router = Router({ mergeParams: true });
+const router = Router();
 
 router.get('/all', searchAll);
 router.get('/subreddits', searchSubreddits);

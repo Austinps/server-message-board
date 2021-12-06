@@ -2,26 +2,26 @@ import { Router } from 'express';
 
 import verifyUser from '../middleware/authentication.js';
 import {
-  handleUserPostVote,
-  handleUserCommentVote,
+  handleUserVoteForPost,
+  handleUserVoteForComment,
 } from '../controllers/user.js';
-import { handlePostVoteTotals } from '../controllers/post.js';
-import { handleCommentVoteTotals } from '../controllers/comment.js';
+import { handleVoteForSinglePost } from '../controllers/post.js';
+import { handleVoteForSingleComment } from '../controllers/comment.js';
 
-const router = Router({ mergeParams: true });
+const router = Router();
 
 router.patch(
-  '/post/:id/vote',
+  '/post/:id',
   verifyUser,
-  handleUserPostVote,
-  handlePostVoteTotals
+  handleUserVoteForPost,
+  handleVoteForSinglePost
 );
 
 router.patch(
-  '/comment/:id/vote',
+  '/comment/:id',
   verifyUser,
-  handleUserCommentVote,
-  handleCommentVoteTotals
+  handleUserVoteForComment,
+  handleVoteForSingleComment
 );
 
 export default router;

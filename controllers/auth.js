@@ -1,4 +1,5 @@
 import createError from 'http-errors';
+
 import User from '../models/user.js';
 import { encryptPassword } from '../helpers/encryption.js';
 

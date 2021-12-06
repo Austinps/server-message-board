@@ -1,5 +1,6 @@
 import createError from 'http-errors';
 import Post from '../models/Post.js';
+import { reverseVotesOnUp, reverseVotesOnDown } from '../helpers/voting.js';
 
 export const getAllPosts = async (req, res, next) => {
   try {
@@ -27,7 +28,7 @@ export const getSinglePost = async (req, res, next) => {
   }
 };
 
-export const createPost = async (req, res, next) => {
+export const createSinglePost = async (req, res, next) => {
   try {
     const { id } = req.user;
     const { title, content, subreddit } = req.body;
@@ -48,7 +49,7 @@ export const createPost = async (req, res, next) => {
   }
 };
 
-export const updatePost = async (req, res, next) => {
+export const updateSinglePost = async (req, res, next) => {
   try {
     const { id } = req.params;
     const post = await Post.findOneAndUpdate(
@@ -66,7 +67,7 @@ export const updatePost = async (req, res, next) => {
   }
 };
 
-export const deletePost = async (req, res, next) => {
+export const deleteSinglePost = async (req, res, next) => {
   try {
     const { id } = req.params;
     const post = await Post.findOneAndDelete({ id, author: req.user.id });
@@ -78,7 +79,7 @@ export const deletePost = async (req, res, next) => {
   }
 };
 
-export const getPostsFromSubreddit = async (req, res, next) => {
+export const getAllPostsFromSubreddit = async (req, res, next) => {
   try {
     const posts = await Post.find({ subreddit: req.params.id })
       .select('-comments')
@@ -95,7 +96,7 @@ export const getPostsFromSubreddit = async (req, res, next) => {
 export const getAllPostsByUser = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const posts = await Post.findById({ author: id });
+    const posts = await Post.find({ author: id });
 
     if (!posts) throw new createError.NotFound();
     res.json(posts);
@@ -104,44 +105,30 @@ export const getAllPostsByUser = async (req, res, next) => {
   }
 };
 
-export const handlePostVoteTotals = async (req, res, next) => {
+export const handleVoteForSinglePost = async (req, res, next) => {
   try {
-    const { isUpVoted, isDownVoted } = req.userVote;
-    console.log(isDownVoted);
     const { id } = req.params;
     const post = await Post.findById(id);
     if (!post) throw new createError.NotFound();
+
+    const { hasUpVoted, hasDownVoted } = req.userVote;
     const { action } = req.body;
 
-    if (action === 'up') {
-      if (!isUpVoted && !isDownVoted) {
-        action === 'up' ? (post.upVotes += 1) : (post.downVotes += 1);
-      } else if (!isUpVoted && isDownVoted) {
-        post.downVotes -= 1;
-        post.upVotes += 1;
-      } else {
-        post.upVotes -= 1;
-      }
-    }
-    if (action === 'down') {
-      if (!isUpVoted && !isDownVoted) {
-        post.downVotes += 1;
-      } else if (isUpVoted && !isDownVoted) {
-        post.downVotes += 1;
-        post.upVotes -= 1;
-      } else {
-        post.downVotes -= 1;
-      }
-    }
+    if (!hasUpVoted && !hasDownVoted)
+      action === 'up' ? (post.upVotes += 1) : (post.downVotes += 1);
+    if (!hasUpVoted && hasDownVoted)
+      action === 'up' ? reverseVotesOnUp('post') : (post.downVotes -= 1);
+    if (hasUpVoted && !hasDownVoted)
+      action === 'up' ? (post.upVotes -= 1) : reverseVotesOnDown('post');
 
     await post.save();
-    res.status(200).json(post);
+    res.status(200).send(post);
   } catch (err) {
     next(err);
   }
 };
 
-export const pushCommentToPost = async (req, res, next) => {
+export const pushCommentIdToPost = async (req, res, next) => {
   const { id } = req.params;
   const post = await Post.findById(id);
   post.comments.push(req.populatedComment.id);

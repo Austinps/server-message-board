@@ -2,21 +2,21 @@ import { Router } from 'express';
 import {
   getAllPosts,
   getSinglePost,
-  createPost,
-  deletePost,
-  updatePost,
+  createSinglePost,
+  deleteSinglePost,
+  updateSinglePost,
 } from '../controllers/post.js';
 import verifyUser from '../middleware/authentication.js';
 
-const router = Router({ mergeParams: true });
+const router = Router();
 
-router.route('/').get(getAllPosts).post(verifyUser, createPost);
+router.route('/').get(getAllPosts).post(verifyUser, createSinglePost);
 
 //single post
 router
   .route('/:id')
   .get(getSinglePost)
-  .patch(verifyUser, updatePost)
-  .delete(verifyUser, deletePost);
+  .patch(verifyUser, updateSinglePost)
+  .delete(verifyUser, deleteSinglePost);
 
 export default router;

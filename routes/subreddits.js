@@ -6,17 +6,17 @@ import {
   handleSubredditMembers,
   updateSubreddit,
 } from '../controllers/subreddit.js';
-import { getPostsFromSubreddit } from '../controllers/post.js';
+import { getAllPostsFromSubreddit } from '../controllers/post.js';
 import { handleUserSubscription } from '../controllers/user.js';
 import verifyUser from '../middleware/authentication.js';
 
-const router = Router({ mergeParams: true });
+const router = Router();
 
 router.route('/').get(getAllSubs).post(verifyUser, createSubreddit);
 
 router.route('/:id').get(getSingleSubreddit).patch(verifyUser, updateSubreddit);
 
-router.get('/:id/posts', getPostsFromSubreddit);
+router.get('/:id/posts', getAllPostsFromSubreddit);
 router.patch(
   '/:id/subscribe',
   verifyUser,

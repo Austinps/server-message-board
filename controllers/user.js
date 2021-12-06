@@ -21,7 +21,7 @@ export const getSingleUser = async (req, res, next) => {
   }
 };
 
-export const updateUser = async (req, res, next) => {
+export const updateSingleUser = async (req, res, next) => {
   try {
     const { id } = req.params;
     const updatedUser = await User.findByIdAndUpdate(id, req.body, {
@@ -38,8 +38,8 @@ export const handleUserSubscription = async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findById(req.user.id);
-
     const { subscriptions } = user;
+
     req.isSubscribed = subscriptions.some((item) => item.equals(id));
     !req.isSubscribed ? subscriptions.push(id) : subscriptions.pull(id);
 
@@ -80,63 +80,68 @@ export const getUserSubscriptions = async (req, res, next) => {
   }
 };
 
-export const handleUserPostVote = async (req, res, next) => {
+export const handleUserVoteForPost = async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findById(req.user.id);
-    const isUpVoted = user.postsUpVoted.some((item) => item.equals(id));
-    const isDownVoted = user.postsDownVoted.some((item) => item.equals(id));
+    const hasUpVoted = user.postsUpVoted.some((item) => item.equals(id));
+    const hasDownVoted = user.postsDownVoted.some((item) => item.equals(id));
     const { action } = req.body;
+    if (action !== 'up' && action !== 'down')
+      throw new createError.BadRequest();
 
     action === 'up' ? user.postsDownVoted.pull(id) : user.postsUpVoted.pull(id);
-    if (!isUpVoted && !isDownVoted) {
+    if (!hasUpVoted && !hasDownVoted) {
       action === 'up'
         ? user.postsUpVoted.push(id)
         : user.postsDownVoted.push(id);
-    } else if (!isUpVoted && isDownVoted) {
+    } else if (!hasUpVoted && hasDownVoted) {
       action === 'up'
         ? user.postsUpVoted.push(id)
         : user.postsDownVoted.pull(id);
-    } else if (isUpVoted && !isDownVoted) {
+    } else if (hasUpVoted && !hasDownVoted) {
       action === 'up'
         ? user.postsUpVoted.pull(id)
         : user.postsDownVoted.push(id);
     }
 
-    req.userVote = { isUpVoted, isDownVoted };
     await user.save();
+    req.userVote = { hasUpVoted, hasDownVoted };
     next();
   } catch (err) {
     next(err);
   }
 };
-export const handleUserCommentVote = async (req, res, next) => {
+
+export const handleUserVoteForComment = async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findById(req.user.id);
-    const isUpVoted = user.commentsUpVoted.some((item) => item.equals(id));
-    const isDownVoted = user.commentsDownVoted.some((item) => item.equals(id));
+    const hasUpVoted = user.commentsUpVoted.some((item) => item.equals(id));
+    const hasDownVoted = user.commentsDownVoted.some((item) => item.equals(id));
     const { action } = req.body;
+    if (action !== 'up' && action !== 'down')
+      throw new createError.BadRequest();
 
     action === 'up'
       ? user.commentsDownVoted.pull(id)
       : user.commentsUpVoted.pull(id);
-    if (!isUpVoted && !isDownVoted) {
+    if (!hasUpVoted && !hasDownVoted) {
       action === 'up'
         ? user.commentsUpVoted.push(id)
         : user.commentsDownVoted.push(id);
-    } else if (!isUpVoted && isDownVoted) {
+    } else if (!hasUpVoted && hasDownVoted) {
       action === 'up'
         ? user.commentsUpVoted.push(id)
         : user.commentsDownVoted.pull(id);
-    } else if (isUpVoted && !isDownVoted) {
+    } else if (hasUpVoted && !hasDownVoted) {
       action === 'up'
         ? user.commentsUpVoted.pull(id)
         : user.commentsDownVoted.push(id);
     }
 
-    req.userVote = { isUpVoted, isDownVoted };
     await user.save();
+    req.userVote = { hasUpVoted, hasDownVoted };
     next();
   } catch (err) {
     next(err);

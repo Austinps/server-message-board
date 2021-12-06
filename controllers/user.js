@@ -1,4 +1,5 @@
 import createError from 'http-errors';
+import { handleUserVotes } from '../helpers/voting.js';
 import User from '../models/User.js';
 
 export const getAllUsers = async (req, res, next) => {
@@ -84,29 +85,10 @@ export const handleUserVoteForPost = async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findById(req.user.id);
-    const hasUpVoted = user.postsUpVoted.some((item) => item.equals(id));
-    const hasDownVoted = user.postsDownVoted.some((item) => item.equals(id));
     const { action } = req.body;
-    if (action !== 'up' && action !== 'down')
-      throw new createError.BadRequest();
 
-    action === 'up' ? user.postsDownVoted.pull(id) : user.postsUpVoted.pull(id);
-    if (!hasUpVoted && !hasDownVoted) {
-      action === 'up'
-        ? user.postsUpVoted.push(id)
-        : user.postsDownVoted.push(id);
-    } else if (!hasUpVoted && hasDownVoted) {
-      action === 'up'
-        ? user.postsUpVoted.push(id)
-        : user.postsDownVoted.pull(id);
-    } else if (hasUpVoted && !hasDownVoted) {
-      action === 'up'
-        ? user.postsUpVoted.pull(id)
-        : user.postsDownVoted.push(id);
-    }
-
+    req.userVote = handleUserVotes(id, user, action, 'posts');
     await user.save();
-    req.userVote = { hasUpVoted, hasDownVoted };
     next();
   } catch (err) {
     next(err);
@@ -117,31 +99,10 @@ export const handleUserVoteForComment = async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findById(req.user.id);
-    const hasUpVoted = user.commentsUpVoted.some((item) => item.equals(id));
-    const hasDownVoted = user.commentsDownVoted.some((item) => item.equals(id));
     const { action } = req.body;
-    if (action !== 'up' && action !== 'down')
-      throw new createError.BadRequest();
 
-    action === 'up'
-      ? user.commentsDownVoted.pull(id)
-      : user.commentsUpVoted.pull(id);
-    if (!hasUpVoted && !hasDownVoted) {
-      action === 'up'
-        ? user.commentsUpVoted.push(id)
-        : user.commentsDownVoted.push(id);
-    } else if (!hasUpVoted && hasDownVoted) {
-      action === 'up'
-        ? user.commentsUpVoted.push(id)
-        : user.commentsDownVoted.pull(id);
-    } else if (hasUpVoted && !hasDownVoted) {
-      action === 'up'
-        ? user.commentsUpVoted.pull(id)
-        : user.commentsDownVoted.push(id);
-    }
-
+    req.userVote = handleUserVotes(id, user, action, 'comments');
     await user.save();
-    req.userVote = { hasUpVoted, hasDownVoted };
     next();
   } catch (err) {
     next(err);

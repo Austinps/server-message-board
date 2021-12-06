@@ -39,30 +39,34 @@ const userSchema = new Schema(
         ref: 'Subreddit',
       },
     ],
-    postsUpVoted: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Post',
-      },
-    ],
-    postsDownVoted: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Post',
-      },
-    ],
-    commentsUpVoted: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Comment',
-      },
-    ],
-    commentsDownVoted: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Comment',
-      },
-    ],
+    posts: {
+      upVoted: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Post',
+        },
+      ],
+      downVoted: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Post',
+        },
+      ],
+    },
+    comments: {
+      upVoted: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Comment',
+        },
+      ],
+      downVoted: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Comment',
+        },
+      ],
+    },
   },
   {
     timestamps: true,

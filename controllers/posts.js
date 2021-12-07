@@ -4,7 +4,7 @@ import { postSchema } from '../validation/index.js';
 
 import { handleDocumentVote } from '../helpers/voting.js';
 
-export const getAllPosts = async (req, res, next) => {
+export const getPosts = async (req, res, next) => {
     try {
         const posts = await Post.find({})
             .sort({ createdAt: -1 })
@@ -32,7 +32,7 @@ export const getSinglePost = async (req, res, next) => {
     }
 };
 
-export const createSinglePost = async (req, res, next) => {
+export const createPost = async (req, res, next) => {
     try {
         const result = await postSchema.validateAsync(req.body);
         const { title, content } = result;
@@ -53,7 +53,7 @@ export const createSinglePost = async (req, res, next) => {
     }
 };
 
-export const updateSinglePost = async (req, res, next) => {
+export const updatePost = async (req, res, next) => {
     try {
         const { id } = req.params;
         const post = await Post.findOneAndUpdate(
@@ -71,7 +71,7 @@ export const updateSinglePost = async (req, res, next) => {
     }
 };
 
-export const deleteSinglePost = async (req, res, next) => {
+export const deletePost = async (req, res, next) => {
     try {
         const { id } = req.params;
         const post = await Post.findOneAndDelete({ id, author: req.user.id });
@@ -83,7 +83,7 @@ export const deleteSinglePost = async (req, res, next) => {
     }
 };
 
-export const getAllPostsFromSubreddit = async (req, res, next) => {
+export const getPostsFromSubreddit = async (req, res, next) => {
     try {
         const posts = await Post.find({ subreddit: req.params.id })
             .select('-comments')
@@ -98,7 +98,7 @@ export const getAllPostsFromSubreddit = async (req, res, next) => {
     }
 };
 
-export const getAllPostsByUser = async (req, res, next) => {
+export const getPostsByUser = async (req, res, next) => {
     try {
         const { id } = req.params;
         const posts = await Post.find({ author: id }).lean();

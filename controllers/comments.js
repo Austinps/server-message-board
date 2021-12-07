@@ -3,7 +3,7 @@ import Comment from '../models/Comment.js';
 import { commentSchema } from '../validation/index.js';
 import { handleDocumentVote } from '../helpers/voting.js';
 
-export const getAllCommentsFromPost = async (req, res) => {
+export const getCommentsFromPost = async (req, res) => {
     const { id } = req.params;
     const comments = await Comment.find({ post: id })
         .populate('author', ['username', 'avatar'])
@@ -11,7 +11,7 @@ export const getAllCommentsFromPost = async (req, res) => {
     res.status(200).send(comments);
 };
 
-export const createSingleComment = async (req, res, next) => {
+export const createComment = async (req, res, next) => {
     try {
         const { id } = req.params;
         const result = await commentSchema.validateAsync(req.body);
@@ -32,7 +32,7 @@ export const createSingleComment = async (req, res, next) => {
     }
 };
 
-export const updateSingleComment = async (req, res, next) => {
+export const updateComment = async (req, res, next) => {
     try {
         const { id } = req.params;
         const commentToBeUpdated = await Comment.findOneAndUpdate(
@@ -50,7 +50,7 @@ export const updateSingleComment = async (req, res, next) => {
     }
 };
 
-export const deleteSingleComment = async (req, res, next) => {
+export const deleteComment = async (req, res, next) => {
     try {
         const id = req.params.commentId;
         const commentToBeDeleted = await Comment.findByIdAndUpdate(
@@ -65,7 +65,7 @@ export const deleteSingleComment = async (req, res, next) => {
     }
 };
 
-export const getAllCommentsByUser = async (req, res, next) => {
+export const getCommentsByUser = async (req, res, next) => {
     try {
         const { id } = req.params;
         const comments = await Comment.find({ user: id }).lean();

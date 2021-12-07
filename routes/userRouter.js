@@ -1,23 +1,23 @@
 import { Router } from 'express';
 import {
-  getAllUsers,
+  getUsers,
   getSingleUser,
-  updateSingleUser,
+  updateUser,
   getUserSubscriptions,
 } from '../controllers/users.js';
-import { getAllPostsByUser } from '../controllers/posts.js';
-import { getAllCommentsByUser } from '../controllers/comments.js';
+import { getPostsByUser } from '../controllers/posts.js';
+import { getCommentsByUser } from '../controllers/comments.js';
 
 import verifyUser from '../middleware/authentication.js';
 
 const router = Router();
 
-router.get('/', getAllUsers);
+router.get('/', getUsers);
 
-router.route('/:id').get(getSingleUser).patch(verifyUser, updateSingleUser);
+router.route('/:id').get(getSingleUser).patch(verifyUser, updateUser);
 
 router.get('/:id/subreddits', getUserSubscriptions);
-router.get('/:id/posts', getAllPostsByUser);
-router.get('/:id/comments', getAllCommentsByUser);
+router.get('/:id/posts', getPostsByUser);
+router.get('/:id/comments', getCommentsByUser);
 
 export default router;

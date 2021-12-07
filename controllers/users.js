@@ -2,7 +2,7 @@ import createError from 'http-errors';
 import User from '../models/User.js';
 import { handleUserVote } from '../helpers/voting.js';
 
-export const getAllUsers = async (req, res, next) => {
+export const getUsers = async (req, res, next) => {
     try {
         const users = await User.find(req.query).lean();
         res.status(200).send(users);
@@ -22,7 +22,7 @@ export const getSingleUser = async (req, res, next) => {
     }
 };
 
-export const updateSingleUser = async (req, res, next) => {
+export const updateUser = async (req, res, next) => {
     try {
         const { id } = req.params;
         const updatedUser = await User.findByIdAndUpdate(id, req.body, {

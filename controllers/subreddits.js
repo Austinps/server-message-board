@@ -3,7 +3,7 @@ import Subreddit from '../models/Subreddit.js';
 //import { subredditSchema } from '../validation/index.js';
 import { getRandomColor } from '../helpers/helpers.js';
 
-export const getAllSubreddits = async (req, res, next) => {
+export const getSubreddits = async (req, res, next) => {
     try {
         const subreddits = await Subreddit.find(req.query).lean();
         res.status(200).send(subreddits);
@@ -56,7 +56,7 @@ export const handleSubredditMembership = async (req, res, next) => {
     }
 };
 
-export const updateSingleSubreddit = async (req, res, next) => {
+export const updateSubreddit = async (req, res, next) => {
     try {
         const { id } = req.params;
         const subreddit = await Subreddit.findOneAndUpdate(

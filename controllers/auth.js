@@ -6,12 +6,14 @@ import { checkIsEmail } from '../helpers/validators.js';
 
 export const registerUser = async (req, res, next) => {
   try {
-    const result = await authSchema.validateAsync(req.body);
-    const alreadyExists = await User.findOne({ email: result.email });
-    if (alreadyExists)
-      throw createError.Conflict(`${result.email} has already been registered`);
+    const isInputValid = await authSchema.validateAsync(req.body);
 
-    const newUser = new User(result);
+    const { email } = isInputValid;
+    const alreadyExists = await User.findOne({ email });
+    if (alreadyExists)
+      throw createError.Conflict(`${email} has already been registered`);
+
+    const newUser = new User(isInputValid);
     await newUser.save();
     const token = await newUser.generateJWT();
     res

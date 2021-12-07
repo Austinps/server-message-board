@@ -5,13 +5,13 @@ import morgan from 'morgan';
 import { handleErrors, throw404 } from './middleware/errors.js';
 
 import {
-  authRouter,
-  userRouter,
-  subredditRouter,
-  postRouter,
-  commentRouter,
-  searchRouter,
-  voteRouter,
+    authRouter,
+    userRouter,
+    subredditRouter,
+    postRouter,
+    commentRouter,
+    searchRouter,
+    voteRouter
 } from './routes/index.js';
 
 const app = express();

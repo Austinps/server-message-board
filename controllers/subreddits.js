@@ -1,5 +1,6 @@
 import createError from 'http-errors';
 import Subreddit from '../models/Subreddit.js';
+import { subredditSchema } from '../validation/index.js';
 import { getRandomColor } from '../helpers/helpers.js';
 
 export const getAllSubs = async (req, res, next) => {

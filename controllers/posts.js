@@ -1,6 +1,6 @@
 import createError from 'http-errors';
 import Post from '../models/Post.js';
-import { postSchema } from '../middleware/validation.js';
+import { postSchema } from '../validation/index.js';
 
 import { handleDocumentVote } from '../helpers/voting.js';
 

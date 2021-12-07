@@ -2,7 +2,7 @@ import createError from 'http-errors';
 
 export const handleDocumentVote = (req, doc) => {
     const { hasUpVoted, hasDownVoted } = req.userVote;
-    const { action } = req.body;
+    const { action } = req.params;
 
     if (!hasUpVoted && !hasDownVoted)
         action === 'up' ? (doc.upVotes += 1) : (doc.downVotes += 1);

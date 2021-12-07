@@ -8,17 +8,17 @@ import {
 import { handleVoteForSinglePost } from '../controllers/posts.js';
 import { handleVoteForSingleComment } from '../controllers/comments.js';
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 router.patch(
-    '/post/:id',
+    '/post/:id/:action',
     verifyUser,
     handleUserVoteForPost,
     handleVoteForSinglePost
 );
 
 router.patch(
-    '/comment/:id',
+    '/comment/:id/:action',
     verifyUser,
     handleUserVoteForComment,
     handleVoteForSingleComment

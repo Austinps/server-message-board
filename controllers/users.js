@@ -84,9 +84,8 @@ export const getUserSubscriptions = async (req, res, next) => {
 
 export const handleUserVoteForPost = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { id, action } = req.params;
         const user = await User.findById(req.user.id);
-        const { action } = req.body;
 
         req.userVote = handleUserVote(id, user, action, 'posts');
         await user.save();
@@ -98,9 +97,8 @@ export const handleUserVoteForPost = async (req, res, next) => {
 
 export const handleUserVoteForComment = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { id, action } = req.params;
         const user = await User.findById(req.user.id);
-        const { action } = req.body;
 
         req.userVote = handleUserVote(id, user, action, 'comments');
         await user.save();

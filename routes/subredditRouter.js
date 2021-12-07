@@ -3,8 +3,8 @@ import {
     getAllSubreddits,
     getSingleSubreddit,
     createSubreddit,
-    handleSubredditMembers,
-    updateSubreddit
+    handleSubredditMembership,
+    updateSingleSubreddit
 } from '../controllers/subreddits.js';
 import {
     createSinglePost,
@@ -21,14 +21,14 @@ router
     .route('/:id')
     .get(getSingleSubreddit)
     .post(verifyUser, createSinglePost)
-    .patch(verifyUser, updateSubreddit);
+    .patch(verifyUser, updateSingleSubreddit);
 
 router.get('/:id/posts', getAllPostsFromSubreddit);
 router.patch(
     '/:id/subscribe',
     verifyUser,
     handleUserSubscription,
-    handleSubredditMembers
+    handleSubredditMembership
 );
 
 export default router;

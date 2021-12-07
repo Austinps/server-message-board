@@ -40,7 +40,7 @@ export const createSubreddit = async (req, res, next) => {
     }
 };
 
-export const handleSubredditMembers = async (req, res, next) => {
+export const handleSubredditMembership = async (req, res, next) => {
     try {
         const { id } = req.params;
         const subreddit = await Subreddit.findById(id);
@@ -56,7 +56,7 @@ export const handleSubredditMembers = async (req, res, next) => {
     }
 };
 
-export const updateSubreddit = async (req, res, next) => {
+export const updateSingleSubreddit = async (req, res, next) => {
     try {
         const { id } = req.params;
         const subreddit = await Subreddit.findOneAndUpdate(

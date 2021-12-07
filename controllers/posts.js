@@ -116,15 +116,7 @@ export const handleVoteForSinglePost = async (req, res, next) => {
         const post = await Post.findById(id);
         if (!post) throw new createError.NotFound();
 
-        const { hasUpVoted, hasDownVoted } = req.userVote;
-        const { action } = req.body;
-
-        const updatedPost = handleDocumentVote(
-            action,
-            hasUpVoted,
-            hasDownVoted,
-            post
-        );
+        const updatedPost = handleDocumentVote(req, post);
 
         await updatedPost.save();
         res.status(200).send(updatedPost);

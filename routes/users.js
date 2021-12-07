@@ -14,7 +14,11 @@ const router = Router();
 
 router.get('/', getUsers);
 
-router.route('/:id').get(getSingleUser).patch(verifyUser, updateUser);
+router
+    .route('/:id')
+    .get(getSingleUser)
+    .patch(verifyUser, updateUser)
+    .delete(verifyUser, deleteUser);
 
 router.get('/:id/subreddits', getUserSubscriptions);
 router.get('/:id/posts', getPostsByUser);

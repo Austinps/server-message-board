@@ -75,17 +75,6 @@ userSchema.pre('save', async function () {
     if (this.isNew) this.password = await encryptPassword(this.password);
 });
 
-userSchema.set('toObject', { virtuals: true });
-userSchema.set('toJSON', {
-    virtuals: true,
-    transform: (_, ret) => {
-        ret.id = ret._id;
-        delete ret._id;
-        delete ret.__v;
-        delete ret.password;
-    }
-});
-
 userSchema.method('authenticate', async function (clearTextPassword) {
     return await comparePassword(clearTextPassword, this.password);
 });
@@ -107,6 +96,17 @@ userSchema.static('verifyToken', async function (token) {
         return user;
     } catch (err) {
         throw new createError.Unauthorized();
+    }
+});
+
+//userSchema.set('toObject', { virtuals: true });
+userSchema.set('toJSON', {
+    virtuals: true,
+    transform: (_, ret) => {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.__v;
+        delete ret.password;
     }
 });
 

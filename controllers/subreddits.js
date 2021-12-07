@@ -1,9 +1,9 @@
 import createError from 'http-errors';
 import Subreddit from '../models/Subreddit.js';
-import { subredditSchema } from '../validation/index.js';
+//import { subredditSchema } from '../validation/index.js';
 import { getRandomColor } from '../helpers/helpers.js';
 
-export const getAllSubs = async (req, res, next) => {
+export const getAllSubreddits = async (req, res, next) => {
     try {
         const subreddits = await Subreddit.find(req.query).lean();
         res.status(200).send(subreddits);

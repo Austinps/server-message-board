@@ -11,7 +11,6 @@ const router = Router();
 
 router.get('/', getPosts);
 
-//single post
 router
     .route('/:id')
     .get(getSinglePost)

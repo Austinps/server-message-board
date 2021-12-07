@@ -1,6 +1,6 @@
 import createError from 'http-errors';
 import Comment from '../models/Comment.js';
-import { commentSchema } from '../middleware/validator.js';
+import { commentSchema } from '../middleware/validation.js';
 import { reverseVotesOnUp, reverseVotesOnDown } from '../helpers/voting.js';
 
 export const getAllCommentsFromPost = async (req, res) => {

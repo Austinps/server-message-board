@@ -1,6 +1,6 @@
 import createError from 'http-errors';
 import Post from '../models/Post.js';
-import { postSchema } from '../middleware/validator.js';
+import { postSchema } from '../middleware/validation.js';
 import { reverseVotesOnUp, reverseVotesOnDown } from '../helpers/voting.js';
 
 export const getAllPosts = async (req, res, next) => {

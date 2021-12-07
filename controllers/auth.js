@@ -1,7 +1,7 @@
 import createError from 'http-errors';
 import User from '../models/user.js';
 
-import { authSchema } from '../middleware/validator.js';
+import { authSchema } from '../middleware/validation.js';
 import { checkIsEmail } from '../helpers/validators.js';
 
 export const registerUser = async (req, res, next) => {

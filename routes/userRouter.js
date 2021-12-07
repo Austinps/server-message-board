@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import {
-  getUsers,
-  getSingleUser,
-  updateUser,
-  getUserSubscriptions,
+    getUsers,
+    getSingleUser,
+    updateUser,
+    getUserSubscriptions
 } from '../controllers/users.js';
 import { getPostsByUser } from '../controllers/posts.js';
 import { getCommentsByUser } from '../controllers/comments.js';

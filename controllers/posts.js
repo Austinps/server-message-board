@@ -34,8 +34,8 @@ export const getSinglePost = async (req, res, next) => {
 
 export const createPost = async (req, res, next) => {
     try {
-        const result = await postSchema.validateAsync(req.body);
-        const { title, content } = result;
+        const isInputValid = await postSchema.validateAsync(req.body);
+        const { title, content } = isInputValid;
         const newPost = new Post({
             title,
             content,

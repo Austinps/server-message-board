@@ -55,20 +55,8 @@ export const getUserSubscriptions = async (req, res, next) => {
     try {
         const { id } = req.params;
         const user = await User.findById(id)
-            .populate('subscriptions', [
-                'name',
-                'communityIcon',
-                'membersCount',
-                'coverColor',
-                'description'
-            ])
-            .populate('moderating', [
-                'name',
-                'communityIcon',
-                'membersCount',
-                'coverColor',
-                'description'
-            ])
+            .populate('subscriptions', ['name', 'communityIcon'])
+            .populate('moderating', ['name', 'communityIcon'])
             .lean();
         if (!user) throw new createError.NotFound();
 

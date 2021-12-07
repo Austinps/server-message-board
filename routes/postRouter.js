@@ -13,9 +13,9 @@ router.get('/', getPosts);
 
 //single post
 router
-  .route('/:id')
-  .get(getSinglePost)
-  .patch(verifyUser, updatePost)
-  .delete(verifyUser, deletePost);
+    .route('/:id')
+    .get(getSinglePost)
+    .patch(verifyUser, updatePost)
+    .delete(verifyUser, deletePost);
 
 export default router;

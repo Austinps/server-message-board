@@ -21,18 +21,7 @@ export const handleDocumentVote = (action, hasUpVoted, hasDownVoted, doc) => {
     return doc;
 };
 
-// export const reverseVotesOnUp = (type) => {
-//     console.log('reverse');
-//     [type].post.upVotes += 1;
-//     [type].post.downVotes -= 1;
-// };
-// export const reverseVotesOnDown = (type) => {
-//     console.log('reverse');
-//     [type].upVotes -= 1;
-//     [type].downVotes += 1;
-// };
-
-export const handleUserVotes = (id, user, action, type) => {
+export const handleUserVote = (id, user, action, type) => {
     const hasUpVoted = user[type].upVoted.some((item) => item.equals(id));
     const hasDownVoted = user[type].downVoted.some((item) => item.equals(id));
 

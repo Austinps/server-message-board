@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 import createError from 'http-errors';
-import { comparePassword } from '../helpers/encryption.js';
+import { encryptPassword, comparePassword } from '../helpers/encryption.js';
 import { signJWT, verifyJWT } from '../helpers/authentication.js';
 
 const userSchema = new Schema(
@@ -9,7 +9,7 @@ const userSchema = new Schema(
     username: {
       type: String,
       required: true,
-      minlength: [5, 'Usernames must have at least 7 characters'],
+      minlength: [5, 'Usernames must have at least 5 characters'],
       unique: true,
     },
     email: {
@@ -72,6 +72,10 @@ const userSchema = new Schema(
   }
 );
 
+userSchema.pre('save', async function () {
+  if (this.isNew) this.password = await encryptPassword(this.password);
+});
+
 userSchema.set('toObject', { virtuals: true });
 userSchema.set('toJSON', {
   virtuals: true,
@@ -84,7 +88,6 @@ userSchema.set('toJSON', {
 });
 
 userSchema.method('authenticate', async function (clearTextPassword) {
-  // Compare the encrypted password with the given one
   return await comparePassword(clearTextPassword, this.password);
 });
 

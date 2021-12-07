@@ -2,8 +2,7 @@ import createError from 'http-errors';
 import User from '../models/user.js';
 
 import { authSchema } from '../middleware/validator.js';
-//import { encryptPassword } from '../helpers/encryption.js';
-import { validateEmail } from '../helpers/validators.js';
+import { checkIsEmail } from '../helpers/validators.js';
 
 export const registerUser = async (req, res, next) => {
   try {
@@ -12,9 +11,7 @@ export const registerUser = async (req, res, next) => {
     if (alreadyExists)
       throw createError.Conflict(`${result.email} has already been registered`);
 
-    ///const password = await encryptPassword(req.body.password);
     const newUser = new User(result);
-
     await newUser.save();
     const token = await newUser.generateJWT();
     res
@@ -29,7 +26,7 @@ export const registerUser = async (req, res, next) => {
 export const loginUser = async (req, res, next) => {
   try {
     const { login, password } = req.body;
-    const loginMethod = validateEmail(login)
+    const loginMethod = checkIsEmail(login)
       ? { email: login }
       : { username: login };
 

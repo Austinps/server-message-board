@@ -36,6 +36,7 @@ export const createPost = async (req, res, next) => {
     try {
         const isInputValid = await postSchema.validateAsync(req.body);
         const { title, content } = isInputValid;
+
         const newPost = new Post({
             title,
             content,

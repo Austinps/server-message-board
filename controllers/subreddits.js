@@ -1,6 +1,6 @@
 import createError from 'http-errors';
 import Subreddit from '../models/Subreddit.js';
-//import { subredditSchema } from '../validation/index.js';
+import { subredditSchema } from '../validation/index.js';
 import { getRandomColor } from '../helpers/helpers.js';
 
 export const getSubreddits = async (req, res, next) => {
@@ -25,9 +25,13 @@ export const getSingleSubreddit = async (req, res, next) => {
 
 export const createSubreddit = async (req, res, next) => {
     try {
+        const isInputValid = await postSchema.validateAsync(req.body);
+        const { name, description } = isInputValid;
+
         const { id } = req.user;
         const newSubreddit = new Subreddit({
-            ...req.body,
+            name,
+            description,
             members: [id],
             moderator: id,
             coverColor: getRandomColor()

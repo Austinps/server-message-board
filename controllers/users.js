@@ -35,6 +35,18 @@ export const updateUser = async (req, res, next) => {
     }
 };
 
+export const deleteUser = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        if (req.user.id === id) await User.findOneAndDelete({ id });
+        else throw new createError.Unauthorized();
+
+        res.status(204).send('dfdfggf');
+    } catch (err) {
+        next(err);
+    }
+};
+
 export const handleUserSubscription = async (req, res, next) => {
     try {
         const { id } = req.params;

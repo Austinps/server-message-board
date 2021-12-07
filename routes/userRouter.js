@@ -3,11 +3,11 @@ import {
     getUsers,
     getSingleUser,
     updateUser,
+    deleteUser,
     getUserSubscriptions
 } from '../controllers/users.js';
 import { getPostsByUser } from '../controllers/posts.js';
 import { getCommentsByUser } from '../controllers/comments.js';
-
 import verifyUser from '../middleware/authentication.js';
 
 const router = Router();

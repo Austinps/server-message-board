@@ -16,6 +16,7 @@ export const createComment = async (req, res, next) => {
         const { id } = req.params;
         const isInputValid = await commentSchema.validateAsync(req.body);
         const { content, repliedTo, level } = isInputValid;
+
         const newComment = new Comment({
             content,
             post: id,

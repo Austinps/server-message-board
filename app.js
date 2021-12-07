@@ -4,13 +4,15 @@ import morgan from 'morgan';
 
 import { handleErrors, throw404 } from './middleware/errors.js';
 
-import authRouter from './routes/authRouter.js';
-import userRouter from './routes/userRouter.js';
-import subredditRouter from './routes/subredditRouter.js';
-import postRouter from './routes/postRouter.js';
-import commentRouter from './routes/commentRouter.js';
-import searchRouter from './routes/searchRouter.js';
-import voteRouter from './routes/voteRouter.js';
+import {
+  authRouter,
+  userRouter,
+  subredditRouter,
+  postRouter,
+  commentRouter,
+  searchRouter,
+  voteRouter,
+} from './routes/index.js';
 
 const app = express();
 app.use(express.json());

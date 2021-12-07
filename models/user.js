@@ -9,7 +9,6 @@ const userSchema = new Schema(
     username: {
       type: String,
       required: true,
-      minlength: [5, 'Usernames must have at least 5 characters'],
       unique: true,
     },
     email: {

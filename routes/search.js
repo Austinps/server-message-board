@@ -1,16 +1,15 @@
 import { Router } from 'express';
-import {
-  searchSubreddits,
-  searchPosts,
-  searchComments,
-  searchAll,
-} from '../controllers/search.js';
+
+import { searchOne, searchAll } from '../controllers/search.js';
+import { searchSubreddits } from '../controllers/subreddits.js';
+import { searchPosts } from '../controllers/posts.js';
+import { searchComments } from '../controllers/comments.js';
 
 const router = Router();
 
 router.get('/all', searchAll);
-router.get('/subreddits', searchSubreddits);
-router.get('/posts', searchPosts);
-router.get('/comments', searchComments);
+router.get('/subreddits', searchOne(searchSubreddits));
+router.get('/posts', searchOne(searchPosts));
+router.get('/comments', searchOne(searchComments));
 
 export default router;

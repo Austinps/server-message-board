@@ -91,7 +91,7 @@ export const handleVoteForSingleComment = async (req, res, next) => {
     }
 };
 
-export const searchCommentsHelper = (searchTerm) => {
+export const searchComments = (searchTerm) => {
     return Comment.find({
         content: { $regex: searchTerm, $options: 'i' }
     })

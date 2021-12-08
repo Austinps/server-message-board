@@ -78,7 +78,7 @@ export const updateSubreddit = async (req, res, next) => {
     }
 };
 
-export const searchSubredditsHelper = (searchTerm) => {
+export const searchSubreddits = (searchTerm) => {
     return Subreddit.find({
         name: { $regex: searchTerm, $options: 'i' }
     })

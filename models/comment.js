@@ -15,7 +15,7 @@ const commentSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'User'
         },
-        repliedTo: {
+        inReplyTo: {
             type: Schema.Types.ObjectId,
             ref: 'Comment'
         },

@@ -96,6 +96,6 @@ export const searchComments = (searchTerm) => {
         content: { $regex: searchTerm, $options: 'i' }
     })
         .populate('post', ['title'])
-        .populate('user', ['username'])
+        .populate('author', ['username'])
         .lean();
 };

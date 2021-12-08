@@ -1,6 +1,4 @@
-export const paginateResults = (pageNumber, limit, results) => {
-  return results.slice(pageNumber * limit - limit, pageNumber * limit);
-};
+
 
 export const getRandomColor = () => {
   const letters = '0123456789ABCDEF';

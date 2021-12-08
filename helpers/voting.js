@@ -30,6 +30,7 @@ export const handleUserVote = (id, user, action, type) => {
 
     if (action !== 'up' && action !== 'down')
         throw new createError.BadRequest();
+
     action === 'up'
         ? user[type].downVoted.pull(id)
         : user[type].upVoted.pull(id);

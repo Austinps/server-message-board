@@ -99,7 +99,6 @@ userSchema.static('verifyToken', async function (token) {
     }
 });
 
-//userSchema.set('toObject', { virtuals: true });
 userSchema.set('toJSON', {
     virtuals: true,
     transform: (_, ret) => {

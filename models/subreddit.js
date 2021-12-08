@@ -5,13 +5,13 @@ const subredditSchema = new Schema(
     {
         name: {
             type: String,
-            required: [true, 'communities must have a name:/'],
+            required: true,
             unique: true,
             lowercase: true
         },
         description: {
             type: String,
-            required: [true, 'Write something about your community']
+            required: true
         },
         communityIcon: {
             type: String,
@@ -36,7 +36,6 @@ const subredditSchema = new Schema(
     }
 );
 
-subredditSchema.set('toObject', { virtuals: true });
 subredditSchema.set('toJSON', {
     virtuals: true,
     transform: (_, ret) => {

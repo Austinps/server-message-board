@@ -5,8 +5,7 @@ const commentSchema = new Schema(
     {
         content: {
             type: String,
-            required: [true, 'Write something...'],
-            minlength: 1
+            required: true
         },
         post: {
             type: Schema.Types.ObjectId,
@@ -46,8 +45,6 @@ commentSchema.set('toJSON', {
         delete ret.__v;
     }
 });
-commentSchema.pre('updateOne', () => {});
-commentSchema.set('toObject', { virtuals: true });
 
 const Comment = mongoose.models.Comment || model('Comment', commentSchema);
 

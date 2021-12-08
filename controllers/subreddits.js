@@ -1,7 +1,7 @@
 import createError from 'http-errors';
 import Subreddit from '../models/Subreddit.js';
 import { subredditSchema } from '../validation/index.js';
-import { getRandomColor } from '../helpers/helpers.js';
+import { getRandomColor } from '../helpers/randomColors.js';
 
 export const getSubreddits = async (req, res, next) => {
     try {
@@ -25,7 +25,7 @@ export const getSingleSubreddit = async (req, res, next) => {
 
 export const createSubreddit = async (req, res, next) => {
     try {
-        const isInputValid = await postSchema.validateAsync(req.body);
+        const isInputValid = await subredditSchema.validateAsync(req.body);
         const { name, description } = isInputValid;
 
         const { id } = req.user;

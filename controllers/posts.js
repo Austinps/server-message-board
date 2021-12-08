@@ -136,7 +136,10 @@ export const pushCommentIdToPost = async (req, res, next) => {
 
 export const searchPosts = (searchTerm) => {
     return Post.find({
-        title: { $regex: searchTerm, $options: 'i' }
+        $or: [
+            { title: { $regex: searchTerm, $options: 'i' } },
+            { content: { $regex: searchTerm, $options: 'i' } }
+        ]
     })
         .populate('author', ['username'])
         .populate('subreddit', ['name', 'communityIcon'])

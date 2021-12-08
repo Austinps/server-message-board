@@ -80,7 +80,14 @@ export const updateSubreddit = async (req, res, next) => {
 
 export const searchSubreddits = (searchTerm) => {
     return Subreddit.find({
-        name: { $regex: searchTerm, $options: 'i' }
+        $or: [
+            {
+                name: { $regex: searchTerm, $options: 'i' }
+            },
+            {
+                description: { $regex: searchTerm, $options: 'i' }
+            }
+        ]
     })
         .select(['communityIcon', 'name', 'membersCount', 'description'])
         .lean();

@@ -77,3 +77,11 @@ export const updateSubreddit = async (req, res, next) => {
         next(err);
     }
 };
+
+export const searchSubredditsHelper = (searchTerm) => {
+    return Subreddit.find({
+        name: { $regex: searchTerm, $options: 'i' }
+    })
+        .select(['communityIcon', 'name', 'membersCount', 'description'])
+        .lean();
+};

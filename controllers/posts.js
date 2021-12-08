@@ -133,3 +133,12 @@ export const pushCommentIdToPost = async (req, res, next) => {
     await post.save();
     res.status(201).send(req.populatedComment);
 };
+
+export const searchPostsHelper = (searchTerm) => {
+    return Post.find({
+        title: { $regex: searchTerm, $options: 'i' }
+    })
+        .populate('user', ['username'])
+        .populate('subreddit', ['name', 'communityIcon'])
+        .lean();
+};

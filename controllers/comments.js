@@ -90,3 +90,12 @@ export const handleVoteForSingleComment = async (req, res, next) => {
         next(err);
     }
 };
+
+export const searchCommentsHelper = (searchTerm) => {
+    return Comment.find({
+        content: { $regex: searchTerm, $options: 'i' }
+    })
+        .populate('post', ['title'])
+        .populate('user', ['username'])
+        .lean();
+};

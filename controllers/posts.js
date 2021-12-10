@@ -35,14 +35,15 @@ export const getSinglePost = async (req, res, next) => {
 export const createPost = async (req, res, next) => {
     try {
         const isInputValid = await postSchema.validateAsync(req.body);
-        const { title, content } = isInputValid;
 
+        const { title, content } = isInputValid;
         const newPost = new Post({
             title,
             content,
             subreddit: req.params.id,
             author: req.user.id
         });
+
         await newPost.save();
         const populatedPost = await (
             await newPost.populate('author', 'username')

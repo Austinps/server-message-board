@@ -26,8 +26,8 @@ export const getSingleSubreddit = async (req, res, next) => {
 export const createSubreddit = async (req, res, next) => {
     try {
         const isInputValid = await subredditSchema.validateAsync(req.body);
-        const { name, description } = isInputValid;
 
+        const { name, description } = isInputValid;
         const { id } = req.user;
         const newSubreddit = new Subreddit({
             name,

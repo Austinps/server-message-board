@@ -13,10 +13,10 @@ export const getCommentsFromPost = async (req, res) => {
 
 export const createComment = async (req, res, next) => {
     try {
-        const { id } = req.params;
         const isInputValid = await commentSchema.validateAsync(req.body);
-        const { content, inReplyTo, level } = isInputValid;
 
+        const { content, inReplyTo, level } = isInputValid;
+        const { id } = req.params;
         const newComment = new Comment({
             content,
             post: id,
@@ -24,8 +24,8 @@ export const createComment = async (req, res, next) => {
             inReplyTo: inReplyTo ? inReplyTo : null,
             level
         });
-        req.populatedComment = await newComment.save();
 
+        req.populatedComment = await newComment.save();
         req.populatedComment.populate('author', ['username', 'avatar', 'post']);
         next();
     } catch (err) {
